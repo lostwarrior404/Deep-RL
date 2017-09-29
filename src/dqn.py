@@ -1,7 +1,34 @@
 import gym
 import numpy as np
 import random
-import 
+from __future__ import print_function
+import argparse
+import skimage as skimage
+from skimage import transform, color, exposure
+from skimage.transform import rotate
+import sys
+import random
+import numpy as np
+from collections import deque
+from keras import initializers
+from keras.initializers import normal, identity
+from keras.models import model_from_json
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation, Flatten
+from keras.layers.convolutional import Convolution2D, MaxPooling2D
+from keras.optimizers import SGD , Adam
+import tensorflow as tf
+import glob
+import csv
+import pickle
+from sklearn.cluster import KMeans
+from keras.models import load_model
+
+
+
+LEARNING_RATE=
+
+
 
 GAME_SELECT = 'SpaceInvaders-v0'
 #Hyper-Parameters
@@ -35,6 +62,27 @@ class Agent:
 
 		self.explored_count+=1
 
+
+
+
+class Model:
+	number_of_actions=0
+	explored_count = 0
+	model=0
+	input_shape=0
+	
+	def __init__(self, action_space):
+		self.number_of_actions = action_space
+		shape=(84,84,4)
+		model = Sequential()
+		model.add(Conv2D(32, kernel_size=(8, 8),strides=4,activation='relu',input_shape=shape))
+		model.add(Conv2D(64, kernel_size=(4, 4),strides=2,activation='relu'))
+		model.add(Conv2D(64, kernel_size=(3, 3),strides=1,activation='relu'))
+		model.add(Dense(512,activation='relu'))
+		model.add(Dense(action_space,activation='softmax'))
+		adam = Adam(lr=LEARNING_RATE)
+		model.compile(loss='mse',optimizer=adam)
+		self.model=model
 
 
 
