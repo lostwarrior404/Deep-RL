@@ -25,10 +25,7 @@ from sklearn.cluster import KMeans
 from keras.models import load_model
 
 
-
 LEARNING_RATE=
-
-
 
 GAME_SELECT = 'SpaceInvaders-v0'
 #Hyper-Parameters
@@ -53,7 +50,7 @@ class Agent:
 		if(random.random()<EPSILON):
 			return random.randint(0,self.number_of_actions-1)
 		else:
-			return numpy.argmax(logic.predict(state))	
+			return numpy.argmax(logic.predict(state))   
 
 	def record(self,observation):
 		if(len(memory)==MEMORY_SIZE):
@@ -61,9 +58,6 @@ class Agent:
 		self.memory.append(observation)
 
 		self.explored_count+=1
-
-
-
 
 class Model:
 	number_of_actions=0
@@ -83,9 +77,29 @@ class Model:
 		adam = Adam(lr=LEARNING_RATE)
 		model.compile(loss='mse',optimizer=adam)
 		self.model=model
+	
+	def predict(state):
+		mreturn self.model.predict(state)
 
+	def train(self,batch):
+		inputs = np.zeros((len(batch), 84, 84,4))   #32, 80, 80, 4
+		targets = np.zeros((inputs.shape[0], ACTIONS))     
+		for i in range(0, len(batch)):
+				state_t = minibatch[i][0]
+				action_t = minibatch[i][1]
+				reward_t = minibatch[i][2]
+				state_t1 = minibatch[i][3]
+				terminal = minibatch[i][4]
+				inputs[i:i + 1] = state_t    #I saved down s_t
 
+				targets[i] = model.predict(state_t)  # Hitting each buttom probability
+				Q_sa = model.predict(state_t1)
 
+				if terminal:
+					targets[i, action_t] = reward_t
+				else:
+					targets[i, action_t] = reward_t + GAMMA * np.max(Q_sa)
+		 loss += model.train_on_batch(inputs, targets)
 
 if __name__ == '__main__':
 	env = gym.make(GAME_SELECT)
@@ -102,7 +116,7 @@ if __name__ == '__main__':
 			replay_memory.append([state,action,reward,next_state])
 		AI.record(replay_memory)
 	if done:
-            print("Episode finished after {} timesteps".format(i+1))
-            break
+			print("Episode finished after {} timesteps".format(i+1))
+			break
 
-        
+		
