@@ -40,7 +40,14 @@ def frame_process(state):
     output = tf.image.resize_images(output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     output = tf.squeeze(output)
     return output
-
+    
+def transition_process(transition):
+	temp = []
+	for i in range(REPLAY_SIZE):
+		temp.append(transition[i][0])
+	temp.append(transition[REPLAY_SIZE-1][1],transition[REPLAY_SIZE-1][2],transition[REPLAY_SIZE-1][3],transition[REPLAY_SIZE-1][4])
+	return temp
+	
 
 class Agent:
 	number_of_actions=0
