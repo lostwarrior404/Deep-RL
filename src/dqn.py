@@ -38,6 +38,11 @@ NO_OF_ITERATIONS =
 MEMORY_SIZE = 
 REPLAY_SIZE = 
 def frame_process(state):
+	output = tf.image.rgb_to_grayscale(state)
+    output = tf.image.crop_to_bounding_box(output, 34, 0, 160, 160)
+    output = tf.image.resize_images(output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    output = tf.squeeze(output)
+    return output
 
 
 class Agent:
