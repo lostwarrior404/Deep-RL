@@ -24,15 +24,15 @@ import pickle
 from sklearn.cluster import KMeans
 from keras.models import load_model
 
-
-LEARNING_RATE=
+LEARNING_RATE=1e-4
 BATCH_SIZE=40
 GAME_SELECT = 'SpaceInvaders-v0'
 #Hyper-Parameters
-EPSILON = 
-GAMMA = 
+EPSILON = 0.2
+CHANGE_EPSILON=0.00000000001
+GAMMA = 0.95
 NO_OF_ITERATIONS =  
-MEMORY_SIZE = 
+MEMORY_SIZE = 1000
 REPLAY_SIZE = 
 def frame_process(state):
 	output = tf.image.rgb_to_grayscale(state)
@@ -68,10 +68,11 @@ class Agent:
 		if(len(memory)==MEMORY_SIZE):
 			self.memory.pop(0)
 		self.memory.append(observation)
-
+		if EPSILON > FINAL_EPSILON and explored_count > OBSERVE:
+		    	EPSILON -= CHANGE_EPSILON
 		self.explored_count+=1
 	def replay(self):
-		if(exp_count>OBSERVE):
+		if(explored_count>OBSERVE):
 			mini_batch=random.sample(memory,BATCH_SIZE)
 		self.logic.train(mini_batch)
 
