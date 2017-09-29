@@ -26,7 +26,7 @@ from keras.models import load_model
 
 
 LEARNING_RATE=
-
+BATCH_SIZE=40
 GAME_SELECT = 'SpaceInvaders-v0'
 #Hyper-Parameters
 EPSILON = 
@@ -70,6 +70,10 @@ class Agent:
 		self.memory.append(observation)
 
 		self.explored_count+=1
+	def replay(self):
+		if(exp_count>OBSERVE):
+			mini_batch=random.sample(memory,BATCH_SIZE)
+		self.logic.train(mini_batch)
 
 class Model:
 	number_of_actions=0
