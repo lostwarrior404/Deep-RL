@@ -27,19 +27,18 @@ from keras.models import load_model
 LEARNING_RATE=1e-4
 BATCH_SIZE=40
 GAME_SELECT = 'SpaceInvaders-v0'
-#Hyper-Parameters
 EPSILON = 0.2
 CHANGE_EPSILON=0.00000000001
 GAMMA = 0.95
 NO_OF_ITERATIONS =  
 MEMORY_SIZE = 1000
 REPLAY_SIZE = 
+
 def frame_process(state):
-	output = tf.image.rgb_to_grayscale(state)
-    output = tf.image.crop_to_bounding_box(output, 34, 0, 160, 160)
-    output = tf.image.resize_images(output, 84, 84, method=tf.image.ResizeMethod.NEAREST_NEIGHBOR)
-    output = tf.squeeze(output)
-    return output
+	state = skimage.color.rgb2gray(state)
+    state = skimage.transform.resize(state,(84,84))
+    state = skimage.exposure.rescale_intensity(state,out_range=(0,255))
+    return state
     
 def transition_process(transition):
 	temp = []
