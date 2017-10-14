@@ -68,7 +68,7 @@ class Agent:
 
 		if EPSILON > FINAL_EPSILON and self.explored_count > OBSERVE:
 			EPSILON = max(FINAL_EPSILON, INITIAL_EPSILON - (INITIAL_EPSILON- FINAL_EPSILON) * self.explored_count/100000000)
-			EPSILON = max(.1, 1.0 - 0.9 * self.explored_count / 1e7)
+			EPSILON = max(.1, 1.0 - 0.9 * self.explored_count / 1e7) #here self.expl count ki jagah they used env.getStepNumber() i guess they are similara
 			# EPSILON -= CHANGE_EPSILON
 		self.explored_count+=1
 	def replay(self):
