@@ -28,6 +28,7 @@ from keras.models import load_model
 LEARNING_RATE=1e-4
 BATCH_SIZE=40
 GAME_SELECT = 'SpaceInvaders-v0'
+INITIAL_EPSILON=?????
 EPSILON = 0.2
 CHANGE_EPSILON=0.00000000001
 GAMMA = 0.95
@@ -64,8 +65,11 @@ class Agent:
 		if(len(self.memory)>=REPLAY_MEMORY_SIZE):
 			self.memory.pop(0)
 		self.memory.append(observation)
+
 		if EPSILON > FINAL_EPSILON and self.explored_count > OBSERVE:
-				EPSILON -= CHANGE_EPSILON
+			EPSILON = max(FINAL_EPSILON, INITIAL_EPSILON - (INITIAL_EPSILON- FINAL_EPSILON) * self.explored_count/100000000)
+			EPSILON = max(.1, 1.0 - 0.9 * self.explored_count / 1e7)
+			# EPSILON -= CHANGE_EPSILON
 		self.explored_count+=1
 	def replay(self):
 		if(self.explored_count>OBSERVE):
