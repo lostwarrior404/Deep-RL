@@ -27,7 +27,7 @@ from keras.models import load_model
 
 LEARNING_RATE=1e-4
 BATCH_SIZE=40
-GAME_SELECT = 'SpaceInvaders-v0'
+GAME_SELECT = 'Breakout-v0'
 INITIAL_EPSILON=1.0
 EPSILON = INITIAL_EPSILON
 GAMMA = 0.95
@@ -39,7 +39,7 @@ FINAL_EPSILON = 0.001
 def frame_process(state):
 	state = skimage.color.rgb2gray(state)
 # 	im = state[25:197,:]
-	state = skimage.transform.resize(im,(84,84))
+	state = skimage.transform.resize(state,(84,84))
 	state = skimage.exposure.rescale_intensity(state,out_range=(0,255))
 	return state
 
@@ -132,7 +132,6 @@ if __name__ == '__main__':
 	for i in xrange(NO_OF_ITERATIONS):
 		env.render()
 		action = AI.get_nextaction(state_arr)
-		print(action)
 		next_state, reward, done, info = env.step(action)
 		next_state = frame_process(next_state)
 		next_state = next_state.reshape(1,next_state.shape[0],next_state.shape[1],1)
@@ -140,7 +139,6 @@ if __name__ == '__main__':
 		AI.record([state_arr,action,reward,next_state_arr,done])
 		AI.replay()
 		state_arr=next_state_arr
-		print(i)
 		if(i%10000==0):
 			print("Model Saved")
 			AI.saveit()
