@@ -28,17 +28,17 @@ from keras.models import load_model
 LEARNING_RATE=1e-4
 BATCH_SIZE=40
 GAME_SELECT = 'SpaceInvaders-v0'
-INITIAL_EPSILON=1
+INITIAL_EPSILON=1.0
 EPSILON = INITIAL_EPSILON
 GAMMA = 0.95
 NO_OF_ITERATIONS =  10000000
-REPLAY_MEMORY_SIZE = 10000
-OBSERVE = 320
+REPLAY_MEMORY_SIZE = 1000000
+OBSERVE = 50000
 FINAL_EPSILON = 0.001
 
 def frame_process(state):
 	state = skimage.color.rgb2gray(state)
-	im = state[25:197,:]
+# 	im = state[25:197,:]
 	state = skimage.transform.resize(im,(84,84))
 	state = skimage.exposure.rescale_intensity(state,out_range=(0,255))
 	return state
@@ -78,7 +78,7 @@ class Agent:
 
 class Model:
 	explored_count = 0
-	input_shape=0
+	input_shape = 0
 	
 	def __init__(self, action_space):
 		self.number_of_actions = action_space
@@ -99,7 +99,7 @@ class Model:
 		return self.model.predict(state)
 
 	def saveit(self):
-		self.model.save('atari-model.h5',overwrite=True)
+		self.model.save('rl_model.h5',overwrite=True)
 
 	def train(self,batch):
 		inputs = np.zeros((len(batch), 84, 84,4))   #32, 80, 80, 4
@@ -141,12 +141,14 @@ if __name__ == '__main__':
 		AI.replay()
 		state_arr=next_state_arr
 		print(i)
-		if(i%1000==0):
+		if(i%10000==0):
+			print("Model Saved")
 			AI.saveit()
-
 		if done:
 			print("Episode finished after {} timesteps".format(i+1))
 			state = env.reset()
+			for _ in range(30):
+				state = env.step(0)
 			state = frame_process(state)
 			state_arr = np.stack((state, state, state, state), axis=-1)
 			state_arr = state_arr.reshape(1,state_arr.shape[0],state_arr.shape[1],state_arr.shape[2])
