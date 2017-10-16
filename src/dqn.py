@@ -16,7 +16,7 @@ from keras.models import model_from_json
 from keras.models import Sequential
 from keras.layers.core import Dense, Dropout, Activation, Flatten
 from keras.layers.convolutional import Convolution2D, MaxPooling2D
-from keras.optimizers import SGD , Adam
+from keras.optimizers import SGD , Adam,RMSprop
 from keras.layers.convolutional import Conv2D
 import tensorflow as tf
 import glob
@@ -89,8 +89,8 @@ class Model:
 		model.add(Conv2D(64, kernel_size=(3, 3),strides=1,activation='relu'))
 		model.add(Flatten())
 		model.add(Dense(512,activation='relu'))
-		model.add(Dense(action_space,activation='softmax'))
-		adam = Adam(lr=LEARNING_RATE)
+		model.add(Dense(action_space,activation='linear'))
+		adam = RMSprop(lr=LEARNING_RATE,decay=.95,epsilon=.01)
 		model.compile(loss='mse',optimizer=adam)
 		self.model=model
 		self.loss=0
