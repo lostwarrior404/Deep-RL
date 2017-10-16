@@ -27,7 +27,7 @@ from keras.models import load_model
 
 LEARNING_RATE=1e-4
 BATCH_SIZE=40
-GAME_SELECT = 'Breakout-v0'
+GAME_SELECT = 'SpaceInvaders-v0'
 INITIAL_EPSILON=1.0
 EPSILON = INITIAL_EPSILON
 GAMMA = 0.95
@@ -40,7 +40,7 @@ def frame_process(state):
 	state = skimage.color.rgb2gray(state)
 # 	im = state[25:197,:]
 	state = skimage.transform.resize(state,(84,84))
-	state = skimage.exposure.rescale_intensity(state,out_range=(0,255))
+	state = skimage.exposure.rescale_intensity(state,out_range=(0,1))
 	return state
 
 class Agent:
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 	state_arr = state_arr.reshape(1,state_arr.shape[0],state_arr.shape[1],state_arr.shape[2])
 	AI = Agent(env.action_space.n)
 	for i in xrange(NO_OF_ITERATIONS):
-		env.render()
+#		env.render()
 		action = AI.get_nextaction(state_arr)
 		next_state, reward, done, info = env.step(action)
 		next_state = frame_process(next_state)
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 			print("Episode finished after {} timesteps".format(i+1))
 			state = env.reset()
 			for _ in range(30):
-				state = env.step(0)
+				state,l,k,j = env.step(0)
 			state = frame_process(state)
 			state_arr = np.stack((state, state, state, state), axis=-1)
 			state_arr = state_arr.reshape(1,state_arr.shape[0],state_arr.shape[1],state_arr.shape[2])
