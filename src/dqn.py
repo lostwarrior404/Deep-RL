@@ -65,8 +65,8 @@ class Agent:
 			self.memory.pop(0)
 		self.memory.append(observation)
 
-		if EPSILON > FINAL_EPSILON and self.explored_count > OBSERVE:
-			EPSILON = max(FINAL_EPSILON, INITIAL_EPSILON - (INITIAL_EPSILON- FINAL_EPSILON) * self.explored_count/100000000)
+		#if EPSILON > FINAL_EPSILON and self.explored_count > OBSERVE:
+		#	EPSILON = max(FINAL_EPSILON, INITIAL_EPSILON - (INITIAL_EPSILON- FINAL_EPSILON) * self.explored_count/100000000)
 			# EPSILON = max(.1, 1.0 - 0.9 * self.explored_count / 1e7) #here self.expl count ki jagah they used env.getStepNumber() i guess they are similara
 		self.explored_count+=1
 	def replay(self):
@@ -138,6 +138,7 @@ if __name__ == '__main__':
 		next_state_arr = np.append(next_state,state_arr[:,:,:,:3],axis=3)
 		AI.record([state_arr,action,reward,next_state_arr,done])
 		AI.replay()
+		EPSILON = max(.1, 1.0 - 0.9 * i / 1e7)
 		state_arr=next_state_arr
 		if(i%10000==0):
 			print("Model Saved")
